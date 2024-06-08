@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Łączenie pętli</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>  
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+      }
+      .chartMenu {
+        text-align: center;
+        width: 100vw;
+        height: 40px;
+        color: black;
+        font-size: 40px;
+        font-weight: bold;
+      }
+      .chartMenu p {
+        padding: 10px;
+        font-size: 20px;
+      }
+      .chartCard {
+        width: 100vw;
+        background: rgba(54, 162, 235, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .chartBox {
+        width: 85%;
+        padding: 20px;
+        border-radius: 20px;
+        border: solid 3px rgba(54, 162, 235, 1);
+        background: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chartMenu">
+      <p>Łączenie pętli</p>
+    </div>
+    <div class="chartCard">
+      <div class="chartBox">
+        <canvas id="myChart"></canvas>
+      </div>
+    </div>
+
+    <script>
+
+     //g++
+     var xhrURL = '../g++/laczenie petli.json';
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', xhrURL );
+        xhr.responseType = 'text';
+        xhr.send();
+        
+        var requestURL = '../g++/laczenie petli optymalizacja.json';
+        var request = new XMLHttpRequest();
+        request.open('GET', requestURL);
+        request.responseType = 'text';
+        request.send();
+
+        // g++ z wlaczonym optymalizatorem
+        var requestURLCompilerOptimization = '../g++ optymalizacja/laczenie petli.json';
+        var requestCompilerOptimization = new XMLHttpRequest();
+        requestCompilerOptimization.open('GET', requestURLCompilerOptimization);
+        requestCompilerOptimization.responseType = 'text';
+        requestCompilerOptimization.send();
+
+        var requestURLOptimizationWIithoutCompilerOptimization = '../g++ optymalizacja/laczenie petli optymalizacja.json';
+        var requestOptmizationWithoutCompilerOptimization = new XMLHttpRequest();
+        requestOptmizationWithoutCompilerOptimization.open('GET', requestURLOptimizationWIithoutCompilerOptimization);
+        requestOptmizationWithoutCompilerOptimization.responseType = 'text';
+        requestOptmizationWithoutCompilerOptimization.send();
+        
+        // clang
+        var urlClang = '../clang/laczenie petli.json';
+        var requestClang = new XMLHttpRequest();
+        requestClang.open('GET', urlClang);
+        requestClang.responseText = 'text';
+        requestClang.send();
+
+        
+        var urlClangOptimized = '../clang/laczenie petli optymalizacja.json';
+        var requestClangOptimized = new XMLHttpRequest();
+        requestClangOptimized.open('GET', urlClangOptimized);
+        requestClangOptimized.responseText = 'text';
+        requestClangOptimized.send();
+
+        // clang compiler optimization
+        var urlClangCompiler = '../clang optymalizacja/laczenie petli.json';
+        var requestClangCompiler = new XMLHttpRequest();
+        requestClangCompiler.open('GET', urlClangCompiler);
+        requestClangCompiler.responseText = 'text';
+        requestClangCompiler.send();
+
+        var urlClangCompilerOptimized = '../clang optymalizacja/laczenie petli optymalizacja.json';
+        var requestClangCompilerOptimization = new XMLHttpRequest();
+        requestClangCompilerOptimization.open('GET', urlClangCompilerOptimized);
+        requestClangCompilerOptimization.responseText = 'text';
+        requestClangCompilerOptimization.send();
+
+        // visual studio
+        var urlVisualStudio = '../visual/laczenie petli.json';
+        var requestVisualStudio = new XMLHttpRequest();
+        requestVisualStudio.open('GET', urlVisualStudio);
+        requestVisualStudio.responseText = 'text';
+        requestVisualStudio.send();
+
+        var urlVisualStudioOptimized = '../visual/laczenie petli optymalizacja.json';
+        var requestVisualStudioOptimized = new XMLHttpRequest();
+        requestVisualStudioOptimized.open('GET', urlVisualStudioOptimized);
+        requestVisualStudioOptimized.responseText = 'text';
+        requestVisualStudioOptimized.send();
+
+        // visual studio compiler optimization
+        var urlVisualStudioCompiler = '../visual optymalizacja/laczenie petli.json';
+        var requestVisualStudioComiler = new XMLHttpRequest();
+        requestVisualStudioComiler.open('GET', urlVisualStudioCompiler);
+        requestVisualStudioComiler.responseText = 'text';
+        requestVisualStudioComiler.send();
+
+        var urlVisualStudioCompilerOptimized = '../visual optymalizacja/laczenie petli optymalizacja.json';
+        var requestVisualStudioCompilerOptimized = new XMLHttpRequest();
+        requestVisualStudioCompilerOptimized.open("GET", urlVisualStudioCompilerOptimized);
+        requestVisualStudioCompilerOptimized.responseText = 'text';
+        requestVisualStudioCompilerOptimized.send();
+
+
+        async function getISS() {
+            //g++
+            const response = await fetch(xhrURL);
+            const data = await response.json();
+            const responseOptimized = await fetch(requestURL);
+            const dataOptimized = await responseOptimized.json();
+            
+            //g++ compiler optimization
+            const responseCompilerOptimization = await fetch(requestURLCompilerOptimization);
+            const dataCompilerOptimization = await responseCompilerOptimization.json();
+            const responseOptimizedWithoutCompilerOptimization = await fetch(requestURLOptimizationWIithoutCompilerOptimization);
+            const dataOptimizedWithoutCompilerOptimization = await responseOptimizedWithoutCompilerOptimization.json();
+
+            //clang 
+            const responseClang = await fetch(urlClang);
+            const dataClang = await responseClang.json();
+            const responseClangOptimizaed = await fetch(urlClangOptimized);
+            const dataClangOptimized = await responseClangOptimizaed.json();
+
+            //clang compiler optimization
+            const responseClangCompiler = await fetch(urlClangCompiler);
+            const dataClangCompiler = await responseClangCompiler.json();
+            const responseClangCompilerOptimized = await fetch(urlClangCompilerOptimized);
+            const dataClangCompilerOptimization = await responseClangCompilerOptimized.json();
+
+            //visual studio
+            const responseVisualStudio = await fetch(urlVisualStudio);
+            const dataVisualStudio = await responseVisualStudio.json();
+            const responseVisualStudioOptimization = await fetch(urlVisualStudioOptimized);
+            const dataVisualStudioOptimized = await responseVisualStudioOptimization.json();
+
+            //visual studio compiler optimization
+            const responseVisualStudioCompiler = await fetch(urlVisualStudioCompiler);
+            const dataVisualStudioCompiler = await responseVisualStudioCompiler.json();
+            const responseVisualStudioCompilerOptimized = await fetch(urlVisualStudioCompilerOptimized);
+            const dataVisualStudioCompilerOptimized = await responseVisualStudioCompilerOptimized.json();
+
+            making_chart(data, dataOptimized, dataCompilerOptimization, dataOptimizedWithoutCompilerOptimization, dataClang, dataClangOptimized, dataClangCompiler, dataClangCompilerOptimization, dataVisualStudio, dataVisualStudioOptimized,
+            dataVisualStudioCompiler, dataVisualStudioCompilerOptimized);            
+        }
+        getISS();
+        function making_chart(pomJsondata, pomJsonDataOptmization, pomJsonDataCompiler, pomJsonDataCompilerOptimization, pomJsonClang, pomJsonClangOptimized, pomJsonClangCompiler, pomJsonClangCompilerOptimization, 
+          pomJsonVisualStudio, pomJsonVisualStudioOptimization, pomJsonVisualStudioCompiler, pomJsonVisualStudioCompilerOptimization ) {
+              if(xhr.readyState == 4 ){
+                  if(xhr.status === 200) {
+                      // g++
+                      var time = pomJsondata.czas[pomJsondata.czas.length-1];
+                      var reapets = pomJsondata.powtorzenia[pomJsondata.powtorzenia.length-1];
+                      var timeOptimized = pomJsonDataOptmization.czas[pomJsonDataOptmization.czas.length-1];
+
+                      // g++ compiler optimization
+                      var timeCompiler = pomJsonDataCompiler.czas[pomJsonDataCompiler.czas.length-1];
+                      var timeCompilerOptimziation = pomJsonDataCompilerOptimization.czas[pomJsonDataCompilerOptimization.czas.length-1];
+
+                      // clang
+                      var timeClang = pomJsonClang.czas[pomJsonClang.czas.length-1];
+                      var timeClangOptimized = pomJsonClangOptimized.czas[pomJsonClangOptimized.czas.length-1];
+
+                      // clang compiler optimization
+                      var timeClangCompiler = pomJsonClangCompiler.czas[pomJsonClangCompiler.czas.length-1];
+                      var timeClangCompilerOptimization = pomJsonClangCompilerOptimization.czas[pomJsonClangCompilerOptimization.czas.length-1];
+
+                      //visual studio
+                      var timeVisualStudio = pomJsonVisualStudio.czas[pomJsonVisualStudio.czas.length-1];
+                      var timeVisualStudioOptimization = pomJsonVisualStudioOptimization.czas[pomJsonVisualStudioOptimization.czas.length-1];
+
+                      //visual studio compiler optimization
+                      var timeVisualStudioCompiler = pomJsonVisualStudioCompiler.czas[pomJsonVisualStudioCompiler.czas.length-1];
+                      var timeVisualStudioCompilerOptimization = pomJsonVisualStudioCompilerOptimization.czas[pomJsonVisualStudioCompilerOptimization.czas.length-1];
+
+    const data = {
+
+        labels: ['g++', 'g++ optymalizacja', 'g++ z włączonym komilatorem', 'g++ optymalizacja z włączonym komilatorem', 'clang', 'clang optymalizacja', 'clang z włączonym optymalizatorem', 'clang optymalizacja z włączonym optymalizatorem', 
+          'visual studio', 'visual studio optymalizacja', 'visual studio z włączonym optymalizatorem', 'visual studio optymalizacja z włączonym optymalizatorem'
+        ],
+        datasets: [{
+            label: "Czas dla " + reapets + " powtórzeń.",
+            data: [time, timeOptimized, timeCompiler, timeCompilerOptimziation, timeClang, timeClangOptimized, timeClangCompiler, timeClangCompilerOptimization, timeVisualStudio, timeVisualStudioOptimization, timeVisualStudioCompiler, 
+            timeVisualStudioCompilerOptimization
+          ],
+            backgroundColor: [
+            'rgba(255, 26, 104, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+             'rgba(75, 192, 192, 0.2)',
+             'rgba(153, 102, 255, 0.2)',
+             'rgba(255, 159, 64, 0.2)',
+              'rgba(0, 6, 0, 0.2)',
+              'rgba(250, 100, 64, 0.2)',
+              'rgba(10, 200, 50, 0.2)',
+              'rgba(50, 19, 104, 0.2)',
+              'rgba(10, 210, 200, 0.2)',
+              'rgba(200, 210, 200, 0.2)'
+        ],
+        borderColor: [
+            'rgba(255, 26, 104, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+            'rgba(0, 0, 0, 1)',
+            'rgba(5, 19, 64, 1)',
+            'rgba(10, 200, 50, 1)',
+            'rgba(50, 29, 204, 1)',
+            'rgba(10, 210, 200, 1)',
+            'rgba(200, 210, 200, 1)'
+        ],
+        borderWidth: 1,
+        
+      }]
+    };
+    Chart.defaults.font.size = 20;
+    
+    // config 
+    const config = {
+      type: 'bar',
+      data,
+      options: {
+        indexAxis: 'y',
+        scales: {
+          
+          y: {
+          ticks: {
+            font: {
+              size: 20
+            }
+          }
+        },
+          x: {
+          ticks: {
+            font: {
+              size: 20
+            }
+          }
+        }
+        },
+        plugins: {
+          legend: {
+            labels: {
+              boxWidth: 0,
+              font: {
+                  size: 25
+              }
+              
+            }
+            
+          }
+        }
+      },
+      plugins: [ChartDataLabels]
+      
+    };
+
+    
+
+    // render init block
+    const myChart = new Chart(
+      document.getElementById('myChart'),
+      config
+    );
+
+    // Instantly assign Chart.js version
+    const chartVersion = document.getElementById('chartVersion');
+    chartVersion.innerText = Chart.version;
+                
+                  }   
+              }
+          }
+
+    
+    
+    </script>
+
+
+  </body>
+</html>
